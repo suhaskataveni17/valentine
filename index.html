@@ -4,39 +4,53 @@
   <meta charset="UTF-8" />
   <title>💌</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <style>
     body{
       margin:0;
-      height:100vh;
+      min-height:100vh;
       font-family:system-ui, Arial, sans-serif;
       display:flex;
       align-items:center;
       justify-content:center;
       background:#fff0f5;
       overflow:hidden;
+      padding:24px;
+      box-sizing:border-box;
     }
-    .box{
+
+    .card{
+      background:#ffffff;
+      width:min(720px, 94vw);
+      border-radius:22px;
+      box-shadow:0 12px 30px rgba(0,0,0,0.10);
+      padding:34px 28px;
       text-align:center;
-      background:white;
-      padding:40px;
-      border-radius:20px;
-      box-shadow:0 12px 30px rgba(0,0,0,0.1);
-      width:90%;
-      max-width:560px;
     }
-    h1{
-      margin:0 0 22px;
-      font-size:26px;
-      line-height:1.25;
+
+    .name{
+      font-size:22px;
+      font-weight:650;
+      margin:0 0 18px;
     }
+
+    .poem{
+      margin:0;
+      font-size:18px;
+      line-height:1.65;
+      opacity:0.9;
+      white-space:pre-line;
+    }
+
     .btnrow{
+      margin-top:26px;
       display:flex;
       gap:14px;
       align-items:center;
       justify-content:center;
       flex-wrap:wrap;
-      margin-top:10px;
     }
+
     button{
       font-size:18px;
       padding:12px 26px;
@@ -46,10 +60,12 @@
       user-select:none;
       -webkit-tap-highlight-color: transparent;
     }
+
     #yes{
       background:#ff4d6d;
-      color:white;
+      color:#fff;
     }
+
     #no{
       background:#eee;
       color:#333;
@@ -58,7 +74,7 @@
       top:20px;
     }
 
-    /* Yes page styling */
+    /* YES page styling */
     .yesWrap{
       min-height:100vh;
       width:100%;
@@ -70,18 +86,21 @@
       box-sizing:border-box;
       text-align:center;
     }
+
     .yesCard{
       background:white;
       padding:26px;
       border-radius:22px;
       box-shadow:0 12px 30px rgba(0,0,0,0.10);
-      width:min(820px, 94vw);
+      width:min(860px, 94vw);
     }
+
     .yesTitle{
       font-size:34px;
       margin:0 0 14px;
       line-height:1.15;
     }
+
     .photo{
       margin-top:18px;
       width:min(520px, 92vw);
@@ -90,6 +109,7 @@
       border-radius:22px;
       box-shadow:0 12px 30px rgba(0,0,0,0.12);
     }
+
     .tiny{
       opacity:.65;
       margin:14px 0 0;
@@ -97,10 +117,19 @@
     }
   </style>
 </head>
+
 <body>
 
-  <div class="box">
-    <h1>Moksha Prasoona Avvaru... will you be my valentine? 💖</h1>
+  <div class="card" id="page1">
+    <div class="name">Moksha Prasoona Avvaru,</div>
+
+    <p class="poem">
+One year ago, on February 14, we began.
+Not knowing how much love would grow between us.
+Today, I stand on the same date, choosing you again.
+Will you be my Valentine this year too?
+    </p>
+
     <div class="btnrow">
       <button id="yes">Yes</button>
       <span style="opacity:.6;font-size:14px;">(Try pressing No 😄)</span>
@@ -113,7 +142,7 @@
     const noBtn = document.getElementById("no");
     const yesBtn = document.getElementById("yes");
 
-    // ✅ Put your couple photo filename here (must exist in GitHub repo)
+    // ✅ Put your couple photo filename here (upload it to the same GitHub repo)
     const COUPLE_PHOTO = "us.jpg"; // example: "us.jpg" or "us.png"
 
     function moveNoButton() {
@@ -128,14 +157,18 @@
       noBtn.style.top = y + "px";
     }
 
+    // Run away when the pointer gets close (desktop)
     function dodge(e) {
       if (e.type.startsWith("touch")) { moveNoButton(); return; }
+
       const rect = noBtn.getBoundingClientRect();
       const bx = rect.left + rect.width / 2;
       const by = rect.top + rect.height / 2;
+
       const dx = e.clientX - bx;
       const dy = e.clientY - by;
       const dist = Math.hypot(dx, dy);
+
       if (dist < 120) moveNoButton();
     }
 
@@ -146,6 +179,7 @@
     noBtn.addEventListener("mouseenter", moveNoButton);
     noBtn.addEventListener("touchstart", moveNoButton, { passive: true });
 
+    // If she somehow taps/clicks No, still dodge
     noBtn.addEventListener("click", (e) => {
       e.preventDefault();
       moveNoButton();
