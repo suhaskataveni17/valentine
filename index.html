@@ -4,61 +4,107 @@
   <meta charset="UTF-8" />
   <title>💌</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
   <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      font-family: system-ui, Arial, sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #fff0f5;
-      overflow: hidden;
+    body{
+      margin:0;
+      height:100vh;
+      font-family:system-ui, Arial, sans-serif;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:#fff0f5;
+      overflow:hidden;
+    }
+    .box{
+      text-align:center;
+      background:white;
+      padding:40px;
+      border-radius:20px;
+      box-shadow:0 12px 30px rgba(0,0,0,0.1);
+      width:90%;
+      max-width:560px;
+    }
+    h1{
+      margin:0 0 22px;
+      font-size:26px;
+      line-height:1.25;
+    }
+    .btnrow{
+      display:flex;
+      gap:14px;
+      align-items:center;
+      justify-content:center;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+    button{
+      font-size:18px;
+      padding:12px 26px;
+      border-radius:14px;
+      border:none;
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    #yes{
+      background:#ff4d6d;
+      color:white;
+    }
+    #no{
+      background:#eee;
+      color:#333;
+      position:absolute;
+      left:20px;
+      top:20px;
     }
 
-    .box {
-      text-align: center;
-      background: white;
-      padding: 40px;
-      border-radius: 20px;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.1);
-      width: 90%;
-      max-width: 400px;
+    /* Yes page styling */
+    .yesWrap{
+      min-height:100vh;
+      width:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:#ffe6ec;
+      padding:24px;
+      box-sizing:border-box;
+      text-align:center;
     }
-
-    h1 {
-      margin-bottom: 30px;
-      font-size: 28px;
+    .yesCard{
+      background:white;
+      padding:26px;
+      border-radius:22px;
+      box-shadow:0 12px 30px rgba(0,0,0,0.10);
+      width:min(820px, 94vw);
     }
-
-    button {
-      font-size: 18px;
-      padding: 12px 26px;
-      border-radius: 14px;
-      border: none;
-      cursor: pointer;
+    .yesTitle{
+      font-size:34px;
+      margin:0 0 14px;
+      line-height:1.15;
     }
-
-    #yes {
-      background: #ff4d6d;
-      color: white;
-      margin-right: 20px;
+    .photo{
+      margin-top:18px;
+      width:min(520px, 92vw);
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+      border-radius:22px;
+      box-shadow:0 12px 30px rgba(0,0,0,0.12);
     }
-
-    #no {
-      background: #eee;
-      color: #333;
-      position: absolute;
+    .tiny{
+      opacity:.65;
+      margin:14px 0 0;
+      font-size:14px;
     }
   </style>
 </head>
-
 <body>
 
-  <div class="box" id="questionBox">
-    <h1>Will you be my Valentine? 💖</h1>
-    <button id="yes">Yes</button>
+  <div class="box">
+    <h1>Moksha Prasoona Avvaru... will you be my valentine? 💖</h1>
+    <div class="btnrow">
+      <button id="yes">Yes</button>
+      <span style="opacity:.6;font-size:14px;">(Try pressing No 😄)</span>
+    </div>
   </div>
 
   <button id="no">No</button>
@@ -67,34 +113,51 @@
     const noBtn = document.getElementById("no");
     const yesBtn = document.getElementById("yes");
 
-    // place "No" initially
-    moveNoButton();
+    // ✅ Put your couple photo filename here (must exist in GitHub repo)
+    const COUPLE_PHOTO = "us.jpg"; // example: "us.jpg" or "us.png"
 
     function moveNoButton() {
-      const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
-      const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
-      noBtn.style.left = `${x}px`;
-      noBtn.style.top = `${y}px`;
+      const padding = 12;
+      const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+      const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+
+      const x = Math.max(padding, Math.floor(Math.random() * maxX));
+      const y = Math.max(padding, Math.floor(Math.random() * maxY));
+
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
     }
 
-    // run away when mouse comes close
+    function dodge(e) {
+      if (e.type.startsWith("touch")) { moveNoButton(); return; }
+      const rect = noBtn.getBoundingClientRect();
+      const bx = rect.left + rect.width / 2;
+      const by = rect.top + rect.height / 2;
+      const dx = e.clientX - bx;
+      const dy = e.clientY - by;
+      const dist = Math.hypot(dx, dy);
+      if (dist < 120) moveNoButton();
+    }
+
+    window.addEventListener("load", moveNoButton);
+    window.addEventListener("resize", moveNoButton);
+
+    document.addEventListener("mousemove", dodge);
     noBtn.addEventListener("mouseenter", moveNoButton);
-    noBtn.addEventListener("touchstart", moveNoButton);
+    noBtn.addEventListener("touchstart", moveNoButton, { passive: true });
+
+    noBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      moveNoButton();
+    });
 
     yesBtn.addEventListener("click", () => {
       document.body.innerHTML = `
-        <div style="
-          height:100vh;
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          background:#ffe6ec;
-          font-family:system-ui,Arial,sans-serif;
-          text-align:center;
-        ">
-          <div>
-            <h1 style="font-size:36px; margin-bottom:10px;">It’s a date then 💖🥰</h1>
-            <p style="font-size:18px; opacity:0.8;">See you soon 😉</p>
+        <div class="yesWrap">
+          <div class="yesCard">
+            <h1 class="yesTitle">It’s a date then, for the rest of our lives 💖</h1>
+            <img class="photo" src="${COUPLE_PHOTO}" alt="Us" />
+            <p class="tiny">Happy Valentine’s, Moksha 😄</p>
           </div>
         </div>
       `;
